@@ -1,0 +1,28 @@
+name: Build APK
+on: [push]  # 每次代码推送时触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # 使用GitHub的Ubuntu虚拟机
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2  # 下载代码
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8  # 必须用Python 3.8
+
+    - name: Install Buildozer
+      run: pip install buildozer
+
+    - name: Build APK
+      run: |
+        buildozer android clean  # 清理旧编译
+        buildozer android debug  # 编译APK
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: paypy-apk
+        path: bin/*.apk  # 上传生成的APK
